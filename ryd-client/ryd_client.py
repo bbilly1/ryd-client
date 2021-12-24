@@ -8,7 +8,7 @@ import hashlib
 import requests
 
 API_URL = "https://returnyoutubedislikeapi.com"
-
+HEADERS = {'User-Agent': "https://github.com/bbilly1/ryd-client v0.0.1"}
 
 class Login:
     """handle user registation"""
@@ -31,8 +31,8 @@ class Login:
     def get_puzzle(self):
         """get puzzle"""
         user_id = self.user_id or self.generate_user_id()
-        base_url = f"{API_URL}/puzzle/registration"
-        puzzle = requests.get(f"{base_url}?userId={user_id}").json()
+        url = f"{API_URL}/puzzle/registration?userId={user_id}"
+        puzzle = requests.get(url, headers=HEADERS).json()
         puzzle["user_id"] = user_id
 
         return puzzle
@@ -40,7 +40,7 @@ class Login:
     def post_puzzle(self, solution):
         """post solved puzzle to confirm registration"""
         url = f"{API_URL}/puzzle/registration?userId={self.user_id}"
-        response = requests.post(url, json=solution)
+        response = requests.post(url, headers=HEADERS, json=solution)
         if response.ok:
             print(f"successfully registered with user id {self.user_id}")
             return response.text == "true"
@@ -140,7 +140,8 @@ class Vote:
             "videoId": self.video_id,
             "value": self.vote,
         }
-        response = requests.post(f"{API_URL}/interact/vote", json=data)
+        url = f"{API_URL}/interact/vote"
+        response = requests.post(url, headers=HEADERS, json=data)
         if not response.ok:
             print("failed")
             raise ValueError
@@ -155,7 +156,8 @@ class Vote:
             "videoId": self.video_id,
             "solution": solution["solution"]
         }
-        response = requests.post(f"{API_URL}/interact/confirmVote", json=data)
+        url = f"{API_URL}/interact/confirmVote"
+        response = requests.post(url, headers=HEADERS, json=data)
         if response.ok:
             return response.text == "true"
 
@@ -187,7 +189,8 @@ def get_votes(youtube_ids):
     all_votes = []
 
     for youtube_id in youtube_ids:
-        votes = requests.get(f"{API_URL}/votes?videoId={youtube_id}")
+        url = f"{API_URL}/votes?videoId={youtube_id}"
+        votes = requests.get(url, headers=HEADERS)
 
         if votes.ok:
             parsed = votes.json()
