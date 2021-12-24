@@ -1,0 +1,12 @@
+# editor
+.vscode/
+
+# unrelated
+notes.md
+
+# builds
+dist/
+ryd_client.egg-info/
+
+# cache
+__pycache__
