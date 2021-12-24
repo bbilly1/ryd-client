@@ -10,6 +10,12 @@ Python client library for the **Return YouTube Dislike API**:
 - Register your user ID by solving the challenge.
 - Cast your vote for a list of YouTube video IDs. 
 
+## Install
+Download and install library from [https://pypi.org/project/ryd-client/](https://pypi.org/project/ryd-client/):
+
+```shell
+pip install ryd-client
+```
 
 ## Usage
 Some command example
