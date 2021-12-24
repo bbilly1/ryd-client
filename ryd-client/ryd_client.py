@@ -8,7 +8,7 @@ import hashlib
 import requests
 
 API_URL = "https://returnyoutubedislikeapi.com"
-HEADERS = {'User-Agent': "https://github.com/bbilly1/ryd-client v0.0.1"}
+HEADERS = {"User-Agent": "https://github.com/bbilly1/ryd-client v0.0.1"}
 
 class Login:
     """handle user registation"""
