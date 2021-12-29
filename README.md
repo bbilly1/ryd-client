@@ -6,19 +6,19 @@ Python client library for the **Return YouTube Dislike API**:
 
 
 ## Functionality
-- Get votes from a list of YouTube video IDs.
+- Get votes from a single or a list of YouTube video IDs.
 - Register your user ID by solving the challenge.
-- Cast your vote for a list of YouTube video IDs. 
+- Cast your vote for a single or a list of YouTube video IDs. 
 
 ## Install
-Download and install library from [https://pypi.org/project/ryd-client/](https://pypi.org/project/ryd-client/):
+Download and install the library from [https://pypi.org/project/ryd-client/](https://pypi.org/project/ryd-client/):
 
 ```shell
 pip install ryd-client
 ```
 
 ## Usage
-Some command example
+Take a look at the command examples below.
 
 ### Get 
 Pass a list of YouTube video IDs and get a list of votes or pass a string of a single YouTube video ID to get a single votes dictionary:
@@ -26,8 +26,7 @@ Pass a list of YouTube video IDs and get a list of votes or pass a string of a s
 ```python
 import ryd_client
 
-# Passing a list returns a list of dictionaries 
-# with ratings for every video ID returns a list
+# Examle for a list of IDs
 
 result = ryd_client.get(["kxOuG8jMIgI", "CaaJyRvvaq8"])
 
@@ -47,8 +46,7 @@ result = ryd_client.get(["kxOuG8jMIgI", "CaaJyRvvaq8"])
   'status': 200}]
 
 
-# passing a single ID returns a dictionary 
-# with ratings from a single video
+# Example for a single ID
 
 result = ryd_client.get("kxOuG8jMIgI")
 
@@ -97,8 +95,7 @@ Strings automatically get converted to the matching number, both are valid:
 ```python
 import ryd_client
 
-# voting on a list of videos
-# returns a list of results
+# Examle for a list of votes
 votes = [
     ("kxOuG8jMIgI", "dislike"),
     ("CaaJyRvvaq8", 1),
@@ -111,8 +108,7 @@ response = ryd_client.post(votes, user_id=user_id)
  {'id': 'CaaJyRvvaq8', 'status': True, 'vote': 1},
  {'id': 'CEp5SLT-DJg', 'status': True, 'vote': 0}]
 
-# voting on a single video
-# returns a single result
+# Examle for a single vote
 
 vote = ("kxOuG8jMIgI", -1)
 response = ryd_client.post(vote, user_id=user_id)
