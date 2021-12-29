@@ -88,27 +88,50 @@ class Puzzle:
         return False
 
 
-class Vote:
+class VotePost:
     """cast your vote"""
 
-    def __init__(self, user_id, vote):
+    def __init__(self, votes, user_id):
+        self.votes = votes
         self.user_id = user_id
-        self.video_id = vote[0]
-        self.vote = self.validate_vote(vote[1])
 
-    def post(self):
+    def process(self):
+        """process the input"""
+        if isinstance(self.votes, list):
+            to_return = self._process_list()
+        elif isinstance(self.votes, tuple):
+            youtube_id, vote = self.votes
+            validated = self.validate_vote(vote)
+            to_return = self.post((youtube_id, validated))
+        else:
+            raise ValueError
+
+        return to_return
+
+    def _process_list(self):
+        """process a list of votes"""
+        validated = [(i[0], self.validate_vote(i[1])) for i in self.votes]
+
+        all_messages = []
+        for vote in validated:
+            message = self.post(vote)
+            all_messages.append(message)
+
+        return all_messages
+
+    def post(self, vote):
         """post vote to API"""
-        puzzle = self._initial_vote()
+        puzzle = self._initial_vote(vote)
         solution = Puzzle(puzzle).solve()
-        response = self._confirm_vote(solution)
+        response = self._confirm_vote(solution, vote[0])
         if not response:
-            print(f"failed to cast vote for: {self.user_id}, {self.video_id}")
+            print(f"failed to cast vote for: {self.user_id}, {vote}")
             raise ValueError
 
         message = {
-            "id": self.video_id,
+            "id": vote[0],
             "status": response,
-            "vote": self.vote,
+            "vote": vote[1],
         }
 
         return message
@@ -134,12 +157,12 @@ class Vote:
 
         return False
 
-    def _initial_vote(self):
+    def _initial_vote(self, vote):
         """send initial vote to receive puzzle"""
         data = {
             "userId": self.user_id,
-            "videoId": self.video_id,
-            "value": self.vote,
+            "videoId": vote[0],
+            "value": vote[1],
         }
         url = f"{API_URL}/interact/vote"
         response = requests.post(url, headers=HEADERS, json=data)
@@ -150,11 +173,11 @@ class Vote:
 
         return puzzle
 
-    def _confirm_vote(self, solution):
+    def _confirm_vote(self, solution, video_id):
         """send second confirmation with solved puzzle"""
         data = {
             "userId": self.user_id,
-            "videoId": self.video_id,
+            "videoId": video_id,
             "solution": solution["solution"],
         }
         url = f"{API_URL}/interact/confirmVote"
@@ -163,6 +186,52 @@ class Vote:
             return response.text == "true"
 
         return False
+
+
+class VoteGet:
+    """get single vote or list of votes"""
+
+    def __init__(self, youtube_ids):
+        self.youtube_ids = youtube_ids
+
+    def process(self):
+        """process youtube_ids build list or string"""
+        if isinstance(self.youtube_ids, list):
+            to_return = self._process_list()
+        elif isinstance(self.youtube_ids, str):
+            to_return = self._get_vote(self.youtube_ids)
+        else:
+            raise ValueError
+
+        return to_return
+
+    def _process_list(self):
+        """process list"""
+        all_votes = []
+        for youtube_id in self.youtube_ids:
+            parsed = self._get_vote(youtube_id)
+            all_votes.append(parsed)
+        return all_votes
+
+    @staticmethod
+    def _get_vote(youtube_id):
+        """get vote from a single video"""
+        url = f"{API_URL}/votes?videoId={youtube_id}"
+        votes = requests.get(url, headers=HEADERS)
+
+        if votes.ok:
+            parsed = votes.json()
+            parsed["status"] = votes.status_code
+            del parsed["dateCreated"]
+        elif votes.status_code in [400, 404]:
+            parsed = {
+                "id": youtube_id,
+                "status": votes.status_code,
+            }
+        elif votes.status_code == 429:
+            print("ratelimiting reached, cancel")
+
+        return parsed
 
 
 def generate_user_id():
@@ -184,39 +253,17 @@ def register(user_id):
     return True
 
 
-def get_votes(youtube_ids):
+def get(youtube_ids):
     """get votes from list of youtube_ids"""
 
-    all_votes = []
+    result = VoteGet(youtube_ids).process()
 
-    for youtube_id in youtube_ids:
-        url = f"{API_URL}/votes?videoId={youtube_id}"
-        votes = requests.get(url, headers=HEADERS)
-
-        if votes.ok:
-            parsed = votes.json()
-            parsed["status"] = votes.status_code
-            del parsed["dateCreated"]
-        elif votes.status_code in [400, 404]:
-            parsed = {
-                "id": youtube_id,
-                "status": votes.status_code,
-            }
-        elif votes.status_code == 429:
-            print("ratelimiting reached, cancel")
-            break
-
-        all_votes.append(parsed)
-
-    return all_votes
+    return result
 
 
-def post_votes(votes, user_id):
+def post(votes, user_id):
     """post votes"""
-    all_votes = []
-    for vote_pair in votes:
-        vote_handler = Vote(user_id, vote_pair)
-        message = vote_handler.post()
-        all_votes.append(message)
 
-    return all_votes
+    result = VotePost(votes, user_id).process()
+
+    return result
