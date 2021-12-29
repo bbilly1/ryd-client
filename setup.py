@@ -23,4 +23,5 @@ setuptools.setup(
     package_dir={"ryd-client": "ryd-client"},
     packages=setuptools.find_packages(where="ryd_client"),
     python_requires=">=3.6",
+    install_requires=["requests"],
 )
