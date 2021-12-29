@@ -1,14 +1,15 @@
-"""post votes for YouTube video"""
+"""api client for returnyoutubedislike.com"""
 
-import random
-import string
 import base64
 import hashlib
+import random
+import string
 
 import requests
 
 API_URL = "https://returnyoutubedislikeapi.com"
 HEADERS = {"User-Agent": "https://github.com/bbilly1/ryd-client v0.0.1"}
+
 
 class Login:
     """handle user registation"""
@@ -69,7 +70,7 @@ class Puzzle:
 
     def solve(self):
         """get puzzle solution"""
-        challenge = list(base64.b64decode(self.puzzle['challenge']))
+        challenge = list(base64.b64decode(self.puzzle["challenge"]))
         max_count = 2 ** self.puzzle["difficulty"] * 5
         # fill buffer
         buffer = bytearray(20)
@@ -107,7 +108,7 @@ class Vote:
         message = {
             "id": self.video_id,
             "status": response,
-            "vote": self.vote
+            "vote": self.vote,
         }
 
         return message
@@ -118,7 +119,7 @@ class Vote:
         vote_map = {
             "like": 1,
             "dislike": -1,
-            "neutral": 0
+            "neutral": 0,
         }
         if isinstance(vote, str):
             try:
@@ -134,7 +135,7 @@ class Vote:
         return False
 
     def _initial_vote(self):
-        """send initial vote to recieve puzzle"""
+        """send initial vote to receive puzzle"""
         data = {
             "userId": self.user_id,
             "videoId": self.video_id,
@@ -154,7 +155,7 @@ class Vote:
         data = {
             "userId": self.user_id,
             "videoId": self.video_id,
-            "solution": solution["solution"]
+            "solution": solution["solution"],
         }
         url = f"{API_URL}/interact/confirmVote"
         response = requests.post(url, headers=HEADERS, json=data)
@@ -202,7 +203,7 @@ def get_votes(youtube_ids):
                 "status": votes.status_code,
             }
         elif votes.status_code == 429:
-            print("ratelimiting reached, cancle")
+            print("ratelimiting reached, cancel")
             break
 
         all_votes.append(parsed)

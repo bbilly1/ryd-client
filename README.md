@@ -98,4 +98,4 @@ response = ryd_client.post_votes(votes, user_id=user_id)
 
 
 ## Acknowledgement
-If you find this API usefull, please consider donating to the [project](https://returnyoutubedislike.com/donate).
+If you find this API useful, please consider donating to the [project](https://returnyoutubedislike.com/donate).
