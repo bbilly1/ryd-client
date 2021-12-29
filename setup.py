@@ -1,3 +1,5 @@
+"""setup file with project metadata"""
+
 import setuptools
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -5,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="ryd-client",
-    version="0.0.1",
+    version="0.0.2",
     author="Simon",
     author_email="simobilleter@gmail.com",
     description="api client for returnyoutubedislike.com",
