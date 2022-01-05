@@ -8,7 +8,7 @@ import string
 import requests
 
 API_URL = "https://returnyoutubedislikeapi.com"
-HEADERS = {"User-Agent": "https://github.com/bbilly1/ryd-client v0.0.2"}
+HEADERS = {"User-Agent": "https://github.com/bbilly1/ryd-client v0.0.3"}
 
 
 class Login:
