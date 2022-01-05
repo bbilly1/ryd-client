@@ -24,7 +24,7 @@ Take a look at the command examples below.
 Pass a list of YouTube video IDs and get a list of votes or pass a string of a single YouTube video ID to get a single votes dictionary:
 
 ```python
-import ryd_client
+from ryd_client import ryd_client
 
 # Examle for a list of IDs
 
@@ -75,7 +75,7 @@ user_id = ryd_client.generate_user_id()
 Register your user_id in the api:
 
 ```python
-import ryd_client
+from ryd_client import ryd_client
 
 success = ryd_client.register(user_id)
 
@@ -93,7 +93,7 @@ Once your `user_id` is registered, you are allowed to vote. Vote on a list or on
 Strings automatically get converted to the matching number, both are valid:
 
 ```python
-import ryd_client
+from ryd_client import ryd_client
 
 # Examle for a list of votes
 votes = [
