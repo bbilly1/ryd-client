@@ -23,7 +23,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     package_dir={"ryd-client": "ryd-client"},
-    packages=setuptools.find_packages(where="ryd_client"),
+    packages=setuptools.find_packages(),
     python_requires=">=3.6",
     install_requires=["requests"],
 )
