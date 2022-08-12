@@ -4,6 +4,7 @@ import base64
 import hashlib
 import random
 import string
+from time import sleep
 
 import requests
 
@@ -217,19 +218,25 @@ class VoteGet:
     def _get_vote(youtube_id):
         """get vote from a single video"""
         url = f"{API_URL}/votes?videoId={youtube_id}"
-        votes = requests.get(url, headers=HEADERS)
+        try:
+            votes = requests.get(url, headers=HEADERS, timeout=3)
+        except requests.exceptions.RequestException:
+            sleep(5)
+            votes = requests.get(url, headers=HEADERS, timeout=5)
+
+        if not votes:
+            raise ConnectionError("failed to connect to API")
 
         if votes.ok:
             parsed = votes.json()
             parsed["status"] = votes.status_code
             del parsed["dateCreated"]
-        elif votes.status_code in [400, 404]:
+        else:
+            print(f"{youtube_id}: API returns error code {votes.status_code}.")
             parsed = {
                 "id": youtube_id,
                 "status": votes.status_code,
             }
-        elif votes.status_code == 429:
-            print("ratelimiting reached, cancel")
 
         return parsed
 
