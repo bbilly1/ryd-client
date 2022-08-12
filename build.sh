@@ -40,12 +40,12 @@ function publish {
     read -r VERSION
     echo "$VERSION"
 
-    git push all
+    git push
     find dist/ -type f ! -name "*$VERSION*" -exec trash {} \;
     python -m build
     twine upload dist/*
     git tag -a "$VERSION" -m "new release version $VERSION"
-    git push all "$VERSION"
+    git push "$VERSION"
 }
 
 if [[ $1 == "publish" ]]; then
