@@ -6,6 +6,7 @@ notes.md
 
 # builds
 dist/
+build/
 ryd_client.egg-info/
 
 # cache
