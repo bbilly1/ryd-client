@@ -218,13 +218,14 @@ class VoteGet:
     def _get_vote(youtube_id):
         """get vote from a single video"""
         url = f"{API_URL}/votes?videoId={youtube_id}"
+        votes = None
         try:
             votes = requests.get(url, headers=HEADERS, timeout=3)
         except requests.exceptions.RequestException:
             sleep(5)
             votes = requests.get(url, headers=HEADERS, timeout=5)
 
-        if not votes:
+        if votes is None:
             raise ConnectionError("failed to connect to API")
 
         if votes.ok:
@@ -232,7 +233,7 @@ class VoteGet:
             parsed["status"] = votes.status_code
             del parsed["dateCreated"]
         else:
-            print(f"{youtube_id}: API returns error code {votes.status_code}.")
+            print(f"{youtube_id}: RYD returns error code {votes.status_code}.")
             parsed = {
                 "id": youtube_id,
                 "status": votes.status_code,
