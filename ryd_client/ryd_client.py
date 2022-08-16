@@ -9,7 +9,7 @@ from time import sleep
 import requests
 
 API_URL = "https://returnyoutubedislikeapi.com"
-HEADERS = {"User-Agent": "https://github.com/bbilly1/ryd-client v0.0.5"}
+HEADERS = {"User-Agent": "https://github.com/bbilly1/ryd-client v0.0.6"}
 
 
 class Login:
