@@ -45,7 +45,7 @@ function publish {
     python -m build
     twine upload dist/*
     git tag -a "$VERSION" -m "new release version $VERSION"
-    git push "$VERSION"
+    git push origin "$VERSION"
 }
 
 if [[ $1 == "publish" ]]; then
